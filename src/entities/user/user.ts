@@ -5,10 +5,21 @@ export enum UserRoles {
     Admin,
 }
 
-type TUserRoles =
+export type TUserRoles =
     UserRoles.Standard |
     UserRoles.Admin;
 
+export type UserType = {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: TUserRoles;
+  password: string;
+  repeatPassword: string;
+  createdOn: Date;
+  modifiedOn: Date;
+}
 
 /**
  * User class
@@ -24,8 +35,8 @@ export class User {
     public createdOn: Date;
     public modifiedOn: Date;
     static error: string;
-    static md5: any;
-    static hashPsw: any;
+    static md5: Function;
+    static hashPsw: Function;
     /**
      * User class constructor
      * @param {Function} makeId create user id
@@ -33,15 +44,15 @@ export class User {
      * @param {Function} userValidate
      * @param {Function} md5
      * @param {Function} hashPsw
-     * @param {Object} user
+     * @param {UserType} user
     */
     constructor(
         makeId: Function,
-        isValidId: any,
+        isValidId: Function,
         userValidate: Function,
         md5: Function,
         hashPsw: Function,
-        user: any,
+        user: UserType,
     ) {
       User.md5 = md5;
       User.hashPsw = hashPsw;
@@ -76,7 +87,7 @@ export class User {
      * makeHash function
      * @return {string} return hash
     */
-    makeHash():string {
+    makeHash(): string {
       return User.md5(
           this._id +
           this.firstName +

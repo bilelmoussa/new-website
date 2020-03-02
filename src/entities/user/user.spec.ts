@@ -212,7 +212,7 @@ describe('user', () => {
     const fakeUser =
     makeFakeUser({password: password, repeatPassword: password});
     const user = makeUser(fakeUser);
-    const hashPswd = await user.makePswHash();
+    const hashPswd = user.makePswHash();
     const result = await argon2.verify(hashPswd, password);
     const result2 = await argon2.verify(hashPswd, 'randomtext');
     expect(result).toBeDefined();

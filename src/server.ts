@@ -1,12 +1,19 @@
 /* eslint-disable max-len */
 import './loadEnv';
+import redisClient from './redis';
 import App from './app';
 import * as bodyParser from 'body-parser';
 import mongoose from 'mongoose';
-import {port, dbServer} from './config';
+import {port, dbServer, REDIS_PORT, RedisSecret} from './config';
 import {logger} from './shared/logger';
 import {rootSchema} from './controllers';
 import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import connectRedis from 'connect-redis';
+
+import makeFakeUserSession from '../mock/fakeUserSession';
+
+const RedisStore = connectRedis(session);
 
 mongoose.connect(dbServer,
     {
@@ -29,8 +36,16 @@ mongoose.connection.on('connected', () => {
       bodyParser.json(),
       bodyParser.urlencoded({extended: true}),
       cookieParser(),
+      session({
+        secret: RedisSecret,
+        store: new RedisStore({host: 'localhost', port: REDIS_PORT, client: redisClient}),
+        saveUninitialized: false,
+        resave: false,
+      }),
     ],
   });
+  const fakeSession = makeFakeUserSession();
+  console.log(fakeSession);
   app.listen();
 });
 
@@ -41,7 +56,6 @@ mongoose.connection.on('error', function(err) {
 
 const gracefulExit = () => {
   mongoose.connection.close(() => {
-    // eslint-disable-next-line max-len
     logger.info(`Mongoose default connection with DB : ${dbServer} is disconnected through app termination`);
     process.exit(0);
   });
