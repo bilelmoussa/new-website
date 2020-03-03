@@ -1,14 +1,26 @@
-/* eslint-disable one-var */
 /* eslint-disable max-len */
 import makeFakeUserSession from '../../../mock/fakeUserSession';
 import makeUserSession from './';
 import faker from 'faker';
 
 describe('user-session-test', () => {
+  // Test user session without error must successed
+  describe('test user session for success', () => {
+    it('add valid user session info, must successed', () => {
+      const userSession = makeFakeUserSession();
+      console.log(userSession);
+
+      const result = makeUserSession(userSession);
+      console.log(result);
+      expect(result).toBeTruthy();
+    });
+  });
+
+
   // Test session userId
-  describe('userId', () => {
+  describe('user id', () => {
     it('add random number to userId, must have valid user id', () => {
-      const id = faker.random.alphaNumeric(20);
+      const id = 'testingUserId';
       const userSession = makeFakeUserSession({userId: id});
 
       expect(()=> makeUserSession(userSession)).toThrow('user id is not valid');
@@ -17,9 +29,9 @@ describe('user-session-test', () => {
 
 
   // Test session sessionId
-  describe('sessionId', () => {
+  describe('session id', () => {
     it('add random number to sessionId, must have valid session id', () => {
-      const id = faker.random.alphaNumeric(20);
+      const id = 'testingSessionId';
       const userSession = makeFakeUserSession({sessionId: id});
 
       expect(()=> makeUserSession(userSession)).toThrow('session id is not valid');
@@ -28,7 +40,7 @@ describe('user-session-test', () => {
 
 
   // Test session access Token/refresh Token
-  describe('access Token / refresh Token', () => {
+  describe('access token / refresh token', () => {
     it('add random alphaNumeric to accessToken, must have valid access token', () => {
       const accessToken = faker.random.alphaNumeric(20);
       const userSession = makeFakeUserSession({accessToken: accessToken});
@@ -74,7 +86,7 @@ describe('user-session-test', () => {
 
 
   //  Test session userHash
-  describe('user Hash', () => {
+  describe('user hash', () => {
     it('add undefined user Hash, user session must have userHash', () => {
       const userHash = undefined;
       const userSession = makeFakeUserSession({userHash: userHash});
@@ -117,6 +129,105 @@ describe('user-session-test', () => {
       const user = makeFakeUserSession({role: undefined});
 
       expect(makeUserSession(user).userRole).toBe(0);
+    });
+  });
+
+
+  //  Test user session logs
+  describe('logs', () => {
+    it('add undefined logs, user sessions must have logs', () => {
+      const userSession = makeFakeUserSession({logs: undefined});
+
+      expect(() => makeUserSession(userSession)).toThrowError('"logs" is required');
+    });
+
+    it('add empty logs, user sessions must have logs', () => {
+      const userSession = makeFakeUserSession({logs: []});
+
+      expect(() => makeUserSession(userSession)).toThrowError('"logs" does not contain 1 required value(s)');
+    });
+
+    it('add different type of logs, user sessions logs must be of type array of date', () => {
+      const logs = faker.random.alphaNumeric(5);
+      const userSession = makeFakeUserSession({logs: logs});
+
+      expect(() => makeUserSession(userSession)).toThrowError('"logs" must be an array');
+    });
+
+    it('add different type of log, user sessions log must be of type iso date', () => {
+      const log = faker.random.alphaNumeric(5);
+      const userSession = makeFakeUserSession({logs: [log]});
+
+      expect(() => makeUserSession(userSession)).toThrowError('"logs[0]" must be in ISO 8601 date format');
+    });
+
+    it('add undefined log, user sessions log must be date not undefined', () => {
+      const log = undefined;
+      const userSession = makeFakeUserSession({logs: [log]});
+
+      expect(() => makeUserSession(userSession)).toThrowError('"logs[0]" must not be a sparse array item');
+    });
+  });
+
+
+  // Test user session createdOn
+  describe('created on', () => {
+    it('add undefined createdOn, user session must have a createdOn date', ()=>{
+      const userSession = makeFakeUserSession({createdOn: undefined});
+
+      expect(() => makeUserSession(userSession)).toThrow('"createdOn" is required');
+    });
+
+    it('add random number to createdOn date, createdOn must be valid date', ()=>{
+      const createdOn = faker.random.number(4);
+      const userSession = makeFakeUserSession({createdOn: createdOn});
+
+      expect(()=> makeUserSession(userSession)).toThrow('"createdOn" must be a valid date');
+    });
+
+    it('add different type of date to iso createdOn date, createdOn must be of Type ISO 8601 date format', ()=>{
+      const createdOn = new Date().toString();
+      const userSession = makeFakeUserSession({createdOn: createdOn});
+
+      expect(()=> makeUserSession(userSession)).toThrow('"createdOn" must be in ISO 8601 date format');
+    });
+
+    it('add createdOn on the far past, createdOn must be greater than or equal to 2019-12-31T23:00:00 ', ()=>{
+      const createdOn = new Date(2019, 11, 31, 23, 59, 59, 0);
+      const userSession = makeFakeUserSession({createdOn: createdOn});
+
+      expect(()=> makeUserSession(userSession)).toThrow('"createdOn" must be larger than or equal to "2019-12-31T23:00:00.000Z"');
+    });
+  });
+
+
+  // Test user session modifiedOn
+  describe('modified on', () => {
+    it('add undefined modifiedOn, user session must have a modifiedOn date', ()=>{
+      const userSession = makeFakeUserSession({modifiedOn: undefined});
+
+      expect(() => makeUserSession(userSession)).toThrow('"modifiedOn" is required');
+    });
+
+    it('add random number to modifiedOn date, modifiedOn must be valid date', ()=>{
+      const modifiedOn = faker.random.number(4);
+      const userSession = makeFakeUserSession({modifiedOn: modifiedOn});
+
+      expect(()=> makeUserSession(userSession)).toThrow('"modifiedOn" must be a valid date');
+    });
+
+    it('add different type of date to iso modifiedOn date, modifiedOn must be of Type ISO 8601 date format', ()=>{
+      const modifiedOn = new Date().toString();
+      const userSession = makeFakeUserSession({modifiedOn: modifiedOn});
+
+      expect(()=> makeUserSession(userSession)).toThrow('"modifiedOn" must be in ISO 8601 date format');
+    });
+
+    it('add modifiedOn on the far past, modifiedOn must be greater than or equal to 2019-12-31T23:00:00 ', ()=>{
+      const modifiedOn = new Date(2019, 11, 31, 23, 59, 59, 0);
+      const userSession = makeFakeUserSession({modifiedOn: modifiedOn});
+
+      expect(()=> makeUserSession(userSession)).toThrow('"modifiedOn" must be larger than or equal to "2019-12-31T23:00:00.000Z"');
     });
   });
 });

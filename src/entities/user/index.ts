@@ -2,19 +2,13 @@
 import crypto from 'crypto';
 // eslint-disable-next-line no-unused-vars
 import {User, UserType} from './user';
-import userSchema from './UserSchema';
+import userSchema from './user-schema';
 import validateSchema from '../validator';
 import Id from '../../Id';
-import argon2, {verify as verifyPassword} from 'argon2';
-import LoginSchema from './LoginSchema';
-import makeUserLogin from './login';
-import {generateToken} from '../token';
-import sanitizeHtml from 'sanitize-html';
-import {accessTokenSecret, refreshTokenSecret} from '../../config';
+import {hash} from 'argon2';
+
 
 const checkValidation = validateSchema(userSchema);
-
-const checkUserLogininfo = validateSchema(LoginSchema);
 
 /**
  * hash function
@@ -33,27 +27,15 @@ const makeUser = (user: UserType) => new User(
     Id.isValidId,
     checkValidation,
     md5,
-    argon2.hash,
+    hash,
     user,
 );
 
-const userLogin = makeUserLogin({checkUserLogininfo, sanitize, verifyPassword, generateToken, accessTokenSecret, refreshTokenSecret});
 
 const userService = Object.freeze({
   makeUser,
-  userLogin,
 });
 
-/**
- * sanitize text
- * @param {string} text
- * @return {any}
- */
-function sanitize(text: string): any {
-  return sanitizeHtml(text, {
-    allowedIframeHostnames: ['codesandbox.io', 'repl.it'],
-  });
-}
 
 export default userService;
-export {makeUser, userLogin};
+export {makeUser};

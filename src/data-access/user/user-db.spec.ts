@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import mongoose from 'mongoose';
-import User, {addNewUser, getUserById} from './userSchema';
+import User, {addNewUser, getUserById} from './user-schema';
 import makeFakeUser from '../../../mock/fakeUser';
 import makeFakeUserDb from '../../../mock/fakeUserDb';
 import faker from 'faker';

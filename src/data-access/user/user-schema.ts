@@ -2,7 +2,7 @@
 // eslint-disable-next-line no-unused-vars
 import {Document, Schema, model, Model} from 'mongoose';
 import {isCuid} from 'cuid';
-import isEmail from './validator/isEmail';
+import isEmail from './validator/is-email';
 
 const RegexAlpha = /[^\w]|_/g;
 

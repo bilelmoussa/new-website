@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import userSessionSchema from './UserSessionSchema';
+import userSessionSchema from './user-session-schema';
 // eslint-disable-next-line no-unused-vars
 import {UserSession, UserSessionType} from './user-session';
 import validateSchema from '../validator';

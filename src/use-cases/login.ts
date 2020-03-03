@@ -1,4 +1,4 @@
-import {userLogin} from '../entities/user';
+import {userLogin} from '../entities/login';
 
 type MakeLoginArgs = {
     getUserByEmail: Function,

@@ -11,8 +11,6 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
 
-import makeFakeUserSession from '../mock/fakeUserSession';
-
 const RedisStore = connectRedis(session);
 
 mongoose.connect(dbServer,
@@ -44,8 +42,6 @@ mongoose.connection.on('connected', () => {
       }),
     ],
   });
-  const fakeSession = makeFakeUserSession();
-  console.log(fakeSession);
   app.listen();
 });
 
